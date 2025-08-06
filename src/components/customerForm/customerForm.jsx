@@ -3,12 +3,21 @@ import axios from "axios";
 import './customerForm.css'; 
 
 function CustomerForm() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [gender, setGender] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState("");
+//   const [name, setName] = useState("");
+//   const [email, setEmail] = useState("");
+//   const [phone, setPhone] = useState("");
+//   const [gender, setGender] = useState("");
+//   const [description, setDescription] = useState("");
+//   const [image, setImage] = useState("");
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    gender: '',
+    description: '',
+    image: ''
+  })
 
   const handleImageChange = (e) => {
   const file = e.target.files[0];
@@ -19,22 +28,31 @@ function CustomerForm() {
     }
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImage(reader.result); 
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        image: reader.result, 
+      }));
     };
     reader.readAsDataURL(file);
   }
 };
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
   async function handleSubmit(e){
     e.preventDefault();
-    const formData = {
-      name,
-      email,
-      phone,
-      gender,
-      description,
-      image,
-    };
+    // const formData = {
+    //   name,
+    //   email,
+    //   phone,
+    //   gender,
+    //   description,
+    //   image,
+    // };
     try {
       const response = await axios.post(
         "https://cors-anywhere.herokuapp.com/https://webhook.site/3ce93fad-2e3a-41a3-b3a5-0145be691bbf",
@@ -50,6 +68,19 @@ function CustomerForm() {
     }
   };
 
+  const handleRefresh = () => {
+    setFormData(
+        {
+    name: '',
+    email: '',
+    phone: '',
+    gender: '',
+    description: '',
+    image: ''
+  })
+  }
+
+
   return (
     <div>
       <h1>Real-Estate Customer Form</h1>
@@ -57,11 +88,13 @@ function CustomerForm() {
         <label>Name:</label>
         <input
           type="text"
+          name = "name"
           required
           className="input"
           placeholder="e.g. Muhammad Yahya"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={formData.name}
+        //   onChange={(e) => setName(e.target.value)}
+          onChange={(e) => handleChange(e)}
         />
         <br />
         <br />
@@ -70,10 +103,12 @@ function CustomerForm() {
         <input
           type="email"
           required
+          name = "email"
           className="input"
           placeholder="e.g. muhammadyahya.work@gmail.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={formData.email}
+        //   onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => handleChange(e)}
         />
         <br />
         <br />
@@ -82,10 +117,14 @@ function CustomerForm() {
         <input
           type="tel"
           required
+          name = "phone"
           className="input"
           placeholder="e.g. 03218814089"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          value={formData.phone}
+        //   onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => handleChange(e)}
+        
+          
         />
         <br />
         <br />
@@ -95,15 +134,17 @@ function CustomerForm() {
           type="radio"
           name="gender"
           value="Male"
-          checked={gender === "Male"}
-          onChange={(e) => setGender(e.target.value)}
+          checked={formData.gender === "Male"}
+        //   onChange={(e) => setGender(e.target.value)}
+        onChange={(e) => handleChange(e)}
         /> Male
         <input
           type="radio"
           name="gender"
           value="Female"
-          checked={gender === "Female"}
-          onChange={(e) => setGender(e.target.value)}
+          checked={formData.gender === "Female"}
+        //   onChange={(e) => setGender(e.target.value)}
+          onChange={(e) => handleChange(e)}
         /> Female
         <br />
         <br />
@@ -112,9 +153,11 @@ function CustomerForm() {
         <textarea
           className="textarea"
           required
+          name = "description"
           placeholder="What kind of property are you looking for?"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={formData.description}
+        //   onChange={(e) => setDescription(e.target.value)}
+        onChange={(e) => handleChange(e)}
         />
         <br />
         <br />
@@ -122,19 +165,21 @@ function CustomerForm() {
         <input
           type="file"
           className="input"
+          name = "image"
           accept="image/*"
           onChange={handleImageChange}
         />          
         <br />
 
-        {image && (
+        {formData.image && (
         <div>
             <h3>Preview:</h3>
-            <img src={image} alt="Selected" style={{ maxWidth: '300px' }} />
+            <img src={formData.image} alt="Selected" style={{ maxWidth: '300px' }} />
         </div>
 )}
 
         <button type="submit" className="button">Submit</button>
+        <button className="button" onClick={() => handleRefresh()}>Refresh</button>
       </form>
     </div>
   );
