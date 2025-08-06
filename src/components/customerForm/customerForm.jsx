@@ -25,7 +25,7 @@ function CustomerForm() {
   }
 };
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e){
     e.preventDefault();
     const formData = {
       name,
@@ -36,11 +36,13 @@ function CustomerForm() {
       image,
     };
     try {
-      const response = axios.post(
+      const response = await axios.post(
         "https://cors-anywhere.herokuapp.com/https://webhook.site/3ce93fad-2e3a-41a3-b3a5-0145be691bbf",
         formData
       );
-      console.log(response)
+    //   console.log(response)
+    // console.log(response.data)
+    console.log(`STATUS: ${response.status}`)
       alert("Form submitted successfully");
     } catch (error) {
       console.error("Submission error:", error);
