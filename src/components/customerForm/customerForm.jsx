@@ -10,6 +10,21 @@ function CustomerForm() {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
 
+  const handleImageChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    if (file.size > 1024 * 1024) {
+      alert("Image file is too large. Max size is 1MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImage(reader.result); 
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = {
@@ -22,7 +37,7 @@ function CustomerForm() {
     };
     try {
       const response = axios.post(
-        "https://cors-anywhere.herokuapp.com/https://webhook.site/99d86acc-688d-423d-bc92-5700e582d4ed",
+        "https://cors-anywhere.herokuapp.com/https://webhook.site/3ce93fad-2e3a-41a3-b3a5-0145be691bbf",
         formData
       );
       console.log(response)
@@ -40,6 +55,7 @@ function CustomerForm() {
         <label>Name:</label>
         <input
           type="text"
+          required
           className="input"
           placeholder="e.g. Muhammad Yahya"
           value={name}
@@ -51,6 +67,7 @@ function CustomerForm() {
         <label>Email:</label>
         <input
           type="email"
+          required
           className="input"
           placeholder="e.g. muhammadyahya.work@gmail.com"
           value={email}
@@ -62,6 +79,7 @@ function CustomerForm() {
         <label>Phone:</label>
         <input
           type="tel"
+          required
           className="input"
           placeholder="e.g. 03218814089"
           value={phone}
@@ -91,6 +109,7 @@ function CustomerForm() {
         <label>Description:</label>
         <textarea
           className="textarea"
+          required
           placeholder="What kind of property are you looking for?"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -98,16 +117,20 @@ function CustomerForm() {
         <br />
         <br />
 
-        <label>
-          Image Upload:
-          <input
-            type="file"
-            className="input"
-            accept="image/*"
-            onChange={(e) => setImage(e.target.value)}
-          />
-        </label>
+        <input
+          type="file"
+          className="input"
+          accept="image/*"
+          onChange={handleImageChange}
+        />          
         <br />
+
+        {image && (
+        <div>
+            <h3>Preview:</h3>
+            <img src={image} alt="Selected" style={{ maxWidth: '300px' }} />
+        </div>
+)}
 
         <button type="submit" className="button">Submit</button>
       </form>
